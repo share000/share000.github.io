@@ -63,12 +63,18 @@ function errData(err) {
 
 
 function shareContent() {
-	var ref = database.ref('sites');
-  
-	var data = {
-		content: contentInput.value()
+	
+	if (contentInput.value() != "Paste HTML content here")
+	{
+		var ref = database.ref('sites');
+	  
+		var data = {
+			content: contentInput.value()
+		}
+		ref.push(data);
+		
+		contentInput.value("Paste HTML content here");
 	}
-	ref.push(data);
 }
 
 function getSite(k) {
