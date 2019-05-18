@@ -3,13 +3,36 @@ var contentInput;
 var shareButton;
 
 function setup() {
+	var info1 = createP("Text:");
+	info1.parent('post');
 	
-	contentInput = createInput("Paste HTML content here");
+	contentInput = createInput("Here type the text");
 	contentInput.parent('post');
+	
+	var info2 = createP("Text color:");
+	info2.parent('post');
+	
+	colorInput = createInput("Blue");
+	colorInput.parent('post');
+	
+	var info3 = createP("Text size:");
+	info3.parent('post');
+	
+	sizeInput = createSlider(0, 1000, 100);
+	sizeInput.parent('post');
+	
+	var info4= createP("Image link here:");
+	info4.parent('post');
+	
+	imgInput = createInput("");
+	imgInput.parent('post');
 	
 	shareButton = createButton("Share it!");
 	shareButton.parent('post');
 	shareButton.mousePressed(shareContent);
+	
+	var info5= createP("Latest published websites:");
+	info5.parent('post');
 	
 	var config = {
     apiKey: "AIzaSyDu4AT0Ufny7d9RCokjpVYQz8oYODuP7h8",
@@ -43,7 +66,7 @@ function gotData(data) {
 
   var sites = data.val();
   var keys = Object.keys(sites);
-  for (var i = keys.length - 1; i >= 0; i--) {
+  for (var i = keys.length - 1; i >= keys.length - 15; i--) {
     var k = keys[i];
     var c = sites[k].content;
     var li = createElement('li', '');
@@ -64,16 +87,16 @@ function errData(err) {
 
 function shareContent() {
 	
-	if (contentInput.value() != "Paste HTML content here")
+	if (contentInput.value() != "Here type the text")
 	{
 		var ref = database.ref('sites');
 	  
 		var data = {
-			content: contentInput.value()
+			content: "<html><head> 		<style> 			h1 { text-align: center; color: " + colorInput.value() + "; font-size: " + sizeInput.value() + "%;} 		</style> 	</head><body background= " + imgInput.value() + "> 	 	 		<h1>" + contentInput.value() + "</h1> 	 </body></html>"
 		}
 		ref.push(data);
 		
-		contentInput.value("Paste HTML content here");
+		contentInput.value("Here type the text");
 	}
 }
 
