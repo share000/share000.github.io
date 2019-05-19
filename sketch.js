@@ -3,6 +3,13 @@ var contentInput;
 var shareButton;
 
 function setup() {
+	
+	var info0 = createP("Title (exactly 8 characters):");
+	info0.parent('post');
+	
+	titleInput = createInput("sample!!");
+	titleInput.parent('post');
+	
 	var info1 = createP("Text:");
 	info1.parent('post');
 	
@@ -70,7 +77,7 @@ function gotData(data) {
     var k = keys[i];
     var c = sites[k].content;
     var li = createElement('li', '');
-	var ahref = createA('?id=' + k, k);
+	var ahref = createA('?id=' + k, c.substr(19, 26) );
     ahref.mousePressed(getSite);
     ahref.parent(li);
 	
@@ -87,12 +94,12 @@ function errData(err) {
 
 function shareContent() {
 	
-	if (contentInput.value() != "Here type the text")
+	if (contentInput.value() != "Here type the text" && titleInput.value().length == 8)
 	{
 		var ref = database.ref('sites');
 	  
 		var data = {
-			content: "<html><head> 		<style> 			h1 { text-align: center; color: " + colorInput.value() + "; font-size: " + sizeInput.value() + "%;} 		</style> 	</head><body background= " + imgInput.value() + "> 	 	 		<h1>" + contentInput.value() + "</h1> 	 </body></html>"
+			content: "<html><head><title>" + titleInput.value() + "</title> 		<style> 			h1 { text-align: center; color: " + colorInput.value() + "; font-size: " + sizeInput.value() + "%;} 		</style> 	</head><body background= " + imgInput.value() + "> 	 	 		<h1>" + contentInput.value() + "</h1> 	 </body></html>"
 		}
 		ref.push(data);
 		
