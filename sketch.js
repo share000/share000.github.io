@@ -1,45 +1,57 @@
 var database;
 var contentInput;
 var shareButton;
+var explorer;
+var sites;
 
 function setup() {
 	
-	var info0 = createP("Title (exactly 8 characters):");
+	explorer = 1;
+	
+	var info0 = createP("Tytuł (musi mieć dokładnie 8 znaków):");
 	info0.parent('post');
 	
-	titleInput = createInput("sample!!");
+	titleInput = createInput("przykład");
 	titleInput.parent('post');
 	
-	var info1 = createP("Text:");
+	var info1 = createP("Tekst:");
 	info1.parent('post');
 	
-	contentInput = createInput("Here type the text");
+	contentInput = createInput("Tutaj wpisz tekst");
 	contentInput.parent('post');
 	
-	var info2 = createP("Text color:");
+	var info2 = createP("Kolor tekstu (po angielsku):");
 	info2.parent('post');
 	
 	colorInput = createInput("Blue");
 	colorInput.parent('post');
 	
-	var info3 = createP("Text size:");
+	var info3 = createP("Wielkość tekstu:");
 	info3.parent('post');
 	
 	sizeInput = createSlider(0, 1000, 100);
 	sizeInput.parent('post');
 	
-	var info4= createP("Image link here:");
+	var info4= createP("Link do obrazka w tle:");
 	info4.parent('post');
 	
 	imgInput = createInput("");
 	imgInput.parent('post');
 	
-	shareButton = createButton("Share it!");
+	shareButton = createButton("Opublikuj!");
 	shareButton.parent('post');
 	shareButton.mousePressed(shareContent);
 	
-	var info5= createP("Latest published websites:");
+	var info5= createP("Strony opublikowane przez użytkowników:");
 	info5.parent('post');
+	
+	var backb = createButton("<");
+	backb.parent('post');
+	backb.mousePressed(back);
+	
+	var forwb = createButton(">");
+	forwb.parent('post');
+	forwb.mousePressed(forw);
 	
 	var config = {
     apiKey: "AIzaSyDu4AT0Ufny7d9RCokjpVYQz8oYODuP7h8",
@@ -64,6 +76,19 @@ function setup() {
   }
 }
 
+function back()	{
+	if (explorer > 1)
+	{
+		explorer--;
+		arrowExplore();
+	}
+}
+
+function forw()	{
+	explorer++;
+	arrowExplore();
+}
+
 function gotData(data) {
 
   var sitelistings = selectAll('.sitelisting');
@@ -71,9 +96,28 @@ function gotData(data) {
     sitelistings[i].remove();
   }
 
-  var sites = data.val();
+  sites = data.val();
   var keys = Object.keys(sites);
-  for (var i = keys.length - 1; i >= keys.length - 15; i--) {
+  for (var i = keys.length - 1 - (15 * (explorer-1)); i >= keys.length - (15 * explorer); i--) {
+    var k = keys[i];
+    var c = sites[k].content;
+    var li = createElement('li', '');
+	var ahref = createA('?id=' + k, c.substr(19, 26) );
+    ahref.mousePressed(getSite);
+    ahref.parent(li);
+	
+    li.class('sitelisting');
+    li.parent('sitelist');
+  }
+}
+
+function arrowExplore() {
+	var sitelistings = selectAll('.sitelisting');
+  for (var i = 0; i < sitelistings.length; i++) {
+    sitelistings[i].remove();
+  }
+    var keys = Object.keys(sites);
+   for (var i = keys.length - 1 - (15 * (explorer-1)); i >= keys.length - (15 * explorer); i--) {
     var k = keys[i];
     var c = sites[k].content;
     var li = createElement('li', '');
@@ -94,7 +138,7 @@ function errData(err) {
 
 function shareContent() {
 	
-	if (contentInput.value() != "Here type the text" && titleInput.value().length == 8)
+	if (contentInput.value() != "Tutaj wpisz tekst" && titleInput.value().length == 8)
 	{
 		var ref = database.ref('sites');
 	  
@@ -103,7 +147,7 @@ function shareContent() {
 		}
 		ref.push(data);
 		
-		contentInput.value("Here type the text");
+		contentInput.value("Tutaj wpisz tekst");
 	}
 }
 
